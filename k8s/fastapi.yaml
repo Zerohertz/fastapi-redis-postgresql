@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: test:latest
+          imagePullPolicy: Never
+          env:
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
+            - name: POSTGRES_HOST
+              value: "postgres"
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_PORT
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_DB
+          ports:
+            - name: fastapi
+              containerPort: 8000
+              hostPort: 1547
+          command:
+            - "sh"
+            - "-c"
+            - "tail -f /dev/null"
+            # - "zsh"
+            # - "-c"
+            # - ""
+          volumeMounts:
+            - mountPath: /home/zerohertz/workspace/app
+              name: fastapi-storage
+      volumes:
+        - name: fastapi-storage
+          hostPath:
+            path: /home/zerohertz/Zerohertz/fastapi-redis-postgresql/app
+            type: DirectoryOrCreate
