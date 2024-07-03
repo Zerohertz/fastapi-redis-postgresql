@@ -58,7 +58,7 @@ spec:
       volumes:
         - name: postgres-storage
           hostPath:
-            path: /home/zerohertz/Zerohertz/fastapi-redis-postgresql/data
+            path: /home/zerohertz/Zerohertz/data
             type: DirectoryOrCreate
 ---
 apiVersion: v1

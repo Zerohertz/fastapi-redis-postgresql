@@ -57,10 +57,10 @@ spec:
             # - "-c"
             # - ""
           volumeMounts:
-            - mountPath: /home/zerohertz/workspace/app
+            - mountPath: /home/zerohertz/workspace
               name: fastapi-storage
       volumes:
         - name: fastapi-storage
           hostPath:
-            path: /home/zerohertz/Zerohertz/fastapi-redis-postgresql/app
+            path: /home/zerohertz/Zerohertz/fastapi-redis-postgresql
             type: DirectoryOrCreate
