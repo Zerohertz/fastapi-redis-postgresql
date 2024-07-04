@@ -1,8 +1,10 @@
 fastapi
 uvicorn
+pydantic
+
 redis
+
+alembic
+sqlalchemy
 asyncpg
 psycopg2-binary
-sqlalchemy
-databases
-pydantic

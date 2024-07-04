@@ -9,9 +9,12 @@ kubectl exec -it -n fastapi deploy/fastapi -- zsh
 ## Database Migration
 
 ```shell
-pip install alembic
 alembic init alembic
-alembic revision --autogenerate -m "Initial migration"
+sed -i '1i\from app.config import settings\nfrom app.database import Base\n' alembic/env.py
+sed -i 's|target_metadata = None|target_metadata = Base.metadata|g' alembic/env.py
+sed -i '19i\config.set_main_option("sqlalchemy.url", settings.db_url)' alembic/env.py
+isort alembic && black alembic
+alembic revision --autogenerate -m "Init: Migration"
 ```
 
 ---
