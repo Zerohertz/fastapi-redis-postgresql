@@ -29,8 +29,8 @@ def hash_token(token, secret_key):
     return hashlib.sha256((secret_key + token).encode("utf-8")).hexdigest()
 
 
-def authenticate_account(db: DbSession, email: str, password: str):
-    account = crud.get_account_by_email(db, email)
+def authenticate_account(db: DbSession, username: str, password: str):
+    account = crud.get_account_by_username(db, username)
     if not account:
         return False
     if not pwd_context.verify(password, account.password):
@@ -44,8 +44,8 @@ def create_access_token(*, account: Account, expires_delta: timedelta = None):
     token = secrets.token_hex()
     hashed_token = hash_token(token, settings.REDIS_TOKEN)
     session_db = get_redis()
-    logger.debug(f"[auth] create_access_token: {account.email}")
-    session_db.hmset(hashed_token, {"email": account.email})
+    logger.debug(f"[auth] create_access_token: {account.username}")
+    session_db.hmset(hashed_token, {"username": account.username})
     session_db.expire(hashed_token, expires_delta)
     return token
 
@@ -60,8 +60,8 @@ def get_account(
     if not data:
         raise CREDENTIALS_EXCEPTION
     data = {key.decode(): value.decode() for key, value in data.items()}
-    logger.debug(f"""[auth] get_data: {data["email"]}""")
-    account = crud.get_account_by_email(db, data["email"])
+    logger.debug(f"""[auth] get_data: {data["username"]}""")
+    account = crud.get_account_by_username(db, data["username"])
     if account is None:
         raise CREDENTIALS_EXCEPTION
     return account

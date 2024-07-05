@@ -22,9 +22,9 @@ def get_account(db: Session, account_id: int):
     return _fetch_by_id(db, models.Account, account_id)
 
 
-def get_account_by_email(db: Session, email: str):
-    logger.debug(f"[crud] get_account_by_email: {email}")
-    return _fetch_by_id(db, models.Account, email, db_col="email")
+def get_account_by_username(db: Session, username: str):
+    logger.debug(f"[crud] get_account_by_username: {username}")
+    return _fetch_by_id(db, models.Account, username, db_col="username")
 
 
 def _fetch_by_id(db: Session, db_model: Base, db_id: int, db_col: str = "id"):

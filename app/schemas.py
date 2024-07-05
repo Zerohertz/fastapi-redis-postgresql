@@ -11,7 +11,7 @@ class TokenData(BaseModel):
 
 
 class AccountBase(BaseModel):
-    email: str
+    username: str
 
 
 class AccountCreate(AccountBase):

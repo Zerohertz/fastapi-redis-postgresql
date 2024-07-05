@@ -5,13 +5,13 @@ BASE_URL = "http://zerohertz.xyz:1547"
 LOGGER = zz.logging.Logger("Client")
 
 
-def create(email, password):
+def create(username, password):
     url = f"{BASE_URL}/accounts/"
     headers = {
         "accept": "application/json",
         "Content-Type": "application/json",
     }
-    data = {"email": email, "password": password}
+    data = {"username": username, "password": password}
     response = requests.post(url, headers=headers, json=data)
     LOGGER.info(f"[/accounts/] {response.status_code}")
     LOGGER.info(f"[/accounts/] {response.json()}")
