@@ -7,12 +7,19 @@ from sqlalchemy.orm import Session
 from app import auth, crud, models, schemas
 from app.config import settings
 from app.database import get_postgres
+from app.logger import logger
 
 router = APIRouter()
 
 
 @router.post("/", response_model=schemas.Account)
 def create_account(account: schemas.AccountCreate, db: Session = Depends(get_postgres)):
+    is_created = auth.authenticate_account(db, account.username, account.password)
+    if is_created:
+        logger.info(
+            f"[routers/accounts] create_account: {account.username} was already created"
+        )
+        return is_created
     return crud.create_account(db, account)
 
 
