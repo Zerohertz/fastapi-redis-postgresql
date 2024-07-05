@@ -11,6 +11,10 @@ class Settings:
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
     REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
     REDIS_DB: int = int(os.getenv("REDIS_DB", 0))
+    REDIS_TOKEN: str = "secret"
+
+    TOKEN_EXPIRE_MINUTES = 10
+    TOKEN_URL: str = ""
 
     @property
     def db_url(self):

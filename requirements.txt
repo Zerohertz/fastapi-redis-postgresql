@@ -8,3 +8,5 @@ alembic
 sqlalchemy
 asyncpg
 psycopg2-binary
+
+passlib

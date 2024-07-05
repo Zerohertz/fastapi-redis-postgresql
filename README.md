@@ -17,6 +17,12 @@ isort alembic && black alembic
 alembic revision --autogenerate -m "Init: Migration"
 ```
 
+## FastAPI
+
+```shell
+uvicorn app.main:app --host 0.0.0.0
+```
+
 ---
 
 ## References
