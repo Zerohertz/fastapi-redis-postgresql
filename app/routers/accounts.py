@@ -14,17 +14,22 @@ router = APIRouter()
 
 @router.post("/", response_model=schemas.Account)
 def create_account(account: schemas.AccountCreate, db: Session = Depends(get_postgres)):
+    logger.info(
+        f"[routers/accounts] create_account: Checking {account.username} was created..."
+    )
     is_created = auth.authenticate_account(db, account.username, account.password)
     if is_created:
         logger.info(
             f"[routers/accounts] create_account: {account.username} was already created"
         )
         return is_created
+    logger.info(f"[routers/accounts] create_account: Creating {account.username}")
     return crud.create_account(db, account)
 
 
 @router.get("/me/", response_model=schemas.Account)
 def read_account_me(account: models.Account = Depends(auth.get_account)):
+    logger.info(f"[routers/accounts] read_account_me: {account.username}")
     return account
 
 
@@ -33,6 +38,7 @@ async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_postgres),
 ):
+    logger.info(f"[routers/accounts] login_for_access_token: {form_data.username}")
     account = auth.authenticate_account(db, form_data.username, form_data.password)
     if not account:
         raise auth.LOGIN_EXCEPTION
