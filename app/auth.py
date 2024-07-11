@@ -2,6 +2,7 @@ import hashlib
 import secrets
 from datetime import timedelta
 
+import redis.asyncio as redis
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session as DbSession
 from starlette.status import HTTP_401_UNAUTHORIZED
@@ -38,28 +39,31 @@ def authenticate_account(db: DbSession, username: str, password: str):
     return account
 
 
-def create_access_token(*, account: Account, expires_delta: timedelta = None):
-    if not expires_delta:
-        expires_delta = timedelta(minutes=15)
+async def create_access_token(
+    *,
+    account: Account,
+    expires_delta: timedelta,
+    cache: redis.Redis,
+):
     token = secrets.token_hex()
     hashed_token = hash_token(token, settings.REDIS_TOKEN)
-    session_db = get_redis()
     logger.debug(f"[auth] create_access_token: {account.username}")
-    session_db.hmset(hashed_token, {"username": account.username})
-    session_db.expire(hashed_token, expires_delta)
+    await cache.hmset(hashed_token, {"username": account.username})
+    await cache.expire(hashed_token, expires_delta)
     return token
 
 
-def get_account(
-    token: str = Depends(oauth2_scheme), db: DbSession = Depends(get_postgres)
+async def get_account(
+    token: str = Depends(oauth2_scheme),
+    db: DbSession = Depends(get_postgres),
+    cache: redis.Redis = Depends(get_redis),
 ):
-    session_db = get_redis()
     hashed_token = hash_token(token, settings.REDIS_TOKEN)
     logger.debug(f"""[auth] get_data: {hashed_token}""")
-    data = session_db.hgetall(hashed_token)
+    data = await cache.hgetall(hashed_token)
     if not data:
         raise CREDENTIALS_EXCEPTION
-    data = {key.decode(): value.decode() for key, value in data.items()}
+    data = {key: value for key, value in data.items()}
     logger.debug(f"""[auth] get_data: {data["username"]}""")
     account = crud.get_account_by_username(db, data["username"])
     if account is None:
