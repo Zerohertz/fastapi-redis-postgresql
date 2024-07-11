@@ -52,14 +52,6 @@ spec:
               value: /var/lib/postgresql/data/pgdata
           ports:
             - containerPort: 5432
-      #     volumeMounts:
-      #       - mountPath: /var/lib/postgresql/data
-      #         name: postgres-storage
-      # volumes:
-      #   - name: postgres-storage
-      #     hostPath:
-      #       path: /home/zerohertz/Zerohertz/data
-      #       type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: Service

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: fastapi
-          image: test:latest
+          image: fastapi:latest
           imagePullPolicy: Never
           env:
             - name: REDIS_HOST
@@ -53,9 +53,6 @@ spec:
             - "sh"
             - "-c"
             - "tail -f /dev/null"
-            # - "zsh"
-            # - "-c"
-            # - ""
           volumeMounts:
             - mountPath: /home/zerohertz/workspace
               name: fastapi-storage
