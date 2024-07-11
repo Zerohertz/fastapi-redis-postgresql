@@ -1,4 +1,4 @@
-# Setup
+### Setup
 
 ```shell
 kubectl create ns fastapi
@@ -29,9 +29,7 @@ uvicorn app.main:app --host 0.0.0.0
 python client/main.py
 ```
 
----
-
-# Logs
+### Logs
 
 ```python
 [07/11/24 15:31:19] INFO     [FastAPI] [database] get_postgres: Connect                                                                       database.py:21
